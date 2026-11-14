@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% from "_macros.html" import pagination %}
+{% block title %}Мероприятия — Админ-панель{% endblock %}
+{% block content %}
+<div class="flex-head">
+    <h1>Мероприятия ({{ total }})</h1>
+    <a class="btn" href="/admin/events/new">Добавить мероприятие</a>
+</div>
+
+{% if events %}
+<table class="table">
+    <thead>
+    <tr>
+        <th>ID</th><th>Название</th><th>Город</th><th>Начало</th>
+        <th>Цена</th><th>Мест</th><th>Публикация</th><th>Действия</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for e in events %}
+    <tr>
+        <td>{{ e.id }}</td>
+        <td><a href="/events/{{ e.id }}">{{ e.title }}</a></td>
+        <td>{{ e.city }}</td>
+        <td>{{ e.starts_at|dt }}</td>
+        <td>{{ e.price|money }}</td>
+        <td>{{ e.available }} / {{ e.capacity }}</td>
+        <td>
+            {% if e.is_published %}
+                <span class="badge green">опубликовано</span>
+            {% else %}
+                <span class="badge gray">скрыто</span>
+            {% endif %}
+        </td>
+        <td class="actions">
+            <a class="btn ghost small" href="/admin/events/{{ e.id }}/edit">Изменить</a>
+            <form method="post" action="/admin/events/{{ e.id }}/delete" class="inline-form"
+                  onsubmit="return confirm('Удалить мероприятие «{{ e.title }}»?')">
+                <button class="btn danger small" type="submit">Удалить</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{{ pagination(page, pages, prev_url, next_url) }}
+{% else %}
+<p class="empty">Мероприятий ещё нет — добавьте первое.</p>
+{% endif %}
+{% endblock %}

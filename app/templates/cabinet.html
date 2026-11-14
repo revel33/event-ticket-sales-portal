@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% from "_macros.html" import badge %}
+{% block title %}Личный кабинет — Билетный портал{% endblock %}
+{% block content %}
+<h1>Личный кабинет</h1>
+
+<h2>Мои брони</h2>
+{% if bookings %}
+<table class="table">
+    <thead>
+    <tr>
+        <th>Мероприятие</th><th>Начало</th><th>Билетов</th>
+        <th>Стоимость</th><th>Статус</th><th>Действия</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for b in bookings %}
+    <tr>
+        <td><a href="/events/{{ b.event_id }}">{{ b.event.title }}</a></td>
+        <td>{{ b.event.starts_at|dt }}</td>
+        <td>{{ b.quantity }}</td>
+        <td>{{ b.total_price|money }}</td>
+        <td>{{ badge(b.status) }}</td>
+        <td class="actions">
+            {% if b.status == 'booked' %}
+                <form method="post" action="/bookings/{{ b.id }}/confirm" class="inline-form">
+                    <button class="btn small" type="submit">Подтвердить</button>
+                </form>
+                <form method="post" action="/bookings/{{ b.id }}/cancel" class="inline-form">
+                    <button class="btn ghost small" type="submit">Отменить</button>
+                </form>
+                <span class="hint">до {{ b.expires_at|dt }}</span>
+            {% elif b.status == 'confirmed' %}
+                <span class="hint">{{ b.tickets|length }} билет(ов) — см. ниже</span>
+            {% else %}
+                <span class="hint">—</span>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="empty">Броней пока нет — выберите мероприятие в <a href="/">каталоге</a>.</p>
+{% endif %}
+
+<h2>Мои билеты</h2>
+{% if tickets %}
+<div class="ticket-grid">
+    {% for t in tickets %}
+    <div class="ticket card">
+        <img src="/api/tickets/{{ t.code }}/qr" alt="QR-код билета {{ t.code }}" class="qr">
+        <h3>{{ t.event.title }}</h3>
+        <p class="card-meta">{{ t.event.starts_at|dt }}</p>
+        <p class="card-meta">{{ t.event.venue }}</p>
+        <p class="mono">{{ t.code }}</p>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p class="empty">Билеты появятся здесь после подтверждения брони.</p>
+{% endif %}
+{% endblock %}

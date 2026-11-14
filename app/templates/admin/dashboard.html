@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Админ-панель — Билетный портал{% endblock %}
+{% block content %}
+<h1>Админ-панель</h1>
+
+<nav class="admin-nav">
+    <a class="btn ghost" href="/admin/events">Мероприятия</a>
+    <a class="btn ghost" href="/admin/bookings">Все брони</a>
+    <a class="btn ghost" href="/docs">REST API (Swagger)</a>
+</nav>
+
+<div class="stat-grid">
+    <div class="stat card">
+        <span class="stat-value">{{ stats.total_users }}</span>
+        <span class="stat-label">пользователей</span>
+    </div>
+    <div class="stat card">
+        <span class="stat-value">{{ stats.total_events }}</span>
+        <span class="stat-label">мероприятий</span>
+    </div>
+    <div class="stat card">
+        <span class="stat-value">{{ stats.tickets_sold }}</span>
+        <span class="stat-label">продано билетов</span>
+    </div>
+    <div class="stat card">
+        <span class="stat-value">{{ stats.revenue|money }}</span>
+        <span class="stat-label">выручка</span>
+    </div>
+</div>
+
+<h2>Брони по статусам</h2>
+<table class="table">
+    <thead><tr><th>Статус</th><th>Количество</th></tr></thead>
+    <tbody>
+    {% for code, title, count in status_rows %}
+    <tr><td>{{ title }}</td><td>{{ count }}</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<h2>Топ событий по продажам</h2>
+{% if stats.top_events %}
+<table class="table">
+    <thead><tr><th>Мероприятие</th><th>Билетов</th><th>Выручка</th></tr></thead>
+    <tbody>
+    {% for t in stats.top_events %}
+    <tr>
+        <td>{{ t.title }}</td>
+        <td>{{ t.tickets_sold }}</td>
+        <td>{{ t.revenue|money }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="empty">Продаж пока нет.</p>
+{% endif %}
+{% endblock %}

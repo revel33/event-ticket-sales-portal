@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Билетный портал{% endblock %}</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header class="topbar">
+    <a class="brand" href="/">Билетный портал</a>
+    <nav class="nav">
+        <a href="/" {% if request.url.path == '/' %}class="active"{% endif %}>Каталог</a>
+        {% if user %}
+            <a href="/cabinet" {% if request.url.path == '/cabinet' %}class="active"{% endif %}>Личный кабинет</a>
+        {% endif %}
+        {% if user and user.role == 'admin' %}
+            <a href="/admin" {% if request.url.path.startswith('/admin') %}class="active"{% endif %}>Админ-панель</a>
+        {% endif %}
+    </nav>
+    <div class="auth">
+        {% if user %}
+            <span class="who">{{ user.full_name }}</span>
+            <form action="/logout" method="post" class="inline-form">
+                <button class="btn ghost small" type="submit">Выйти</button>
+            </form>
+        {% else %}
+            <a class="btn ghost small" href="/login">Войти</a>
+            <a class="btn small" href="/register">Регистрация</a>
+        {% endif %}
+    </div>
+</header>
+<main class="container">
+    {% if msg %}<div class="flash ok">{{ msg }}</div>{% endif %}
+    {% if err %}<div class="flash err">{{ err }}</div>{% endif %}
+    {% block content %}{% endblock %}
+</main>
+<footer class="footer">
+    Учебный проект: FastAPI + SQLAlchemy + Jinja2 ·
+    <a href="/docs">Документация REST API (Swagger)</a>
+</footer>
+</body>
+</html>

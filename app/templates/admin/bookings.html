@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% from "_macros.html" import badge, pagination %}
+{% block title %}Все брони — Админ-панель{% endblock %}
+{% block content %}
+<h1>Все брони ({{ total }})</h1>
+
+<form method="get" class="filters card">
+    <label class="check">Статус
+        <select name="status" onchange="this.form.submit()">
+            <option value="">Все статусы</option>
+            {% for code, title in status_options %}
+                <option value="{{ code }}" {% if status == code %}selected{% endif %}>{{ title }}</option>
+            {% endfor %}
+        </select>
+    </label>
+    <button class="btn" type="submit">Показать</button>
+</form>
+
+{% if bookings %}
+<table class="table">
+    <thead>
+    <tr>
+        <th>ID</th><th>Пользователь</th><th>Мероприятие</th>
+        <th>Билетов</th><th>Стоимость</th><th>Статус</th><th>Создана</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for b in bookings %}
+    <tr>
+        <td>{{ b.id }}</td>
+        <td>{{ b.user.email }}</td>
+        <td><a href="/events/{{ b.event_id }}">{{ b.event.title }}</a></td>
+        <td>{{ b.quantity }}</td>
+        <td>{{ b.total_price|money }}</td>
+        <td>{{ badge(b.status) }}</td>
+        <td>{{ b.created_at|dt }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{{ pagination(page, pages, prev_url, next_url) }}
+{% else %}
+<p class="empty">Броней с выбранным фильтром нет.</p>
+{% endif %}
+{% endblock %}

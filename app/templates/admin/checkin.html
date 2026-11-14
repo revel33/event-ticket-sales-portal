@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Check-in — Админ-панель{% endblock %}
+{% block content %}
+<h1>Check-in билета</h1>
+<p class="hint">
+    Введите код билета (вида TKT-XXXXXXXXXX) или используйте камеру-сканер,
+    который подставит код с QR-картинки.
+</p>
+
+<form method="post" action="/admin/checkin" class="card checkin-form">
+    <label>Код билета
+        <input type="text" name="code" value="{{ code or '' }}" placeholder="TKT-XXXXXXXXXX" required>
+    </label>
+    <button class="btn" type="submit">Отметить проход</button>
+</form>
+
+{% if result %}
+<div class="flash ok">
+    <strong>Проход отмечен:</strong> {{ result.event.title }} ·
+    {{ result.event.starts_at|dt }} ·
+    билет {{ result.code }} ·
+    владелец: {{ result.user.full_name }}
+</div>
+{% endif %}
+{% endblock %}

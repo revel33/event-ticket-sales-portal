@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Изменение' if is_edit else 'Новое' }} мероприятие — Админ-панель{% endblock %}
+{% block content %}
+<h1>{{ 'Изменение мероприятия' if is_edit else 'Новое мероприятие' }}</h1>
+
+{% if errors %}
+<ul class="flash err err-list">
+    {% for message in errors %}<li>{{ message }}</li>{% endfor %}
+</ul>
+{% endif %}
+
+<form method="post" action="{{ action_url }}" class="form-grid card">
+    <label>Название *
+        <input type="text" name="title" value="{{ form.get('title', '') }}" required maxlength="200">
+    </label>
+    <label>Категория *
+        <select name="category" required>
+            {% for c in categories %}
+                <option value="{{ c }}" {% if form.get('category') == c %}selected{% endif %}>{{ c }}</option>
+            {% endfor %}
+        </select>
+    </label>
+    <label>Город *
+        <input type="text" name="city" value="{{ form.get('city', '') }}" required maxlength="100">
+    </label>
+    <label>Место проведения
+        <input type="text" name="venue" value="{{ form.get('venue', '') }}" maxlength="200">
+    </label>
+    <label>Дата и время начала *
+        <input type="datetime-local" name="starts_at" value="{{ form.get('starts_at', '') }}" required>
+    </label>
+    <label>Цена, руб. (0 — бесплатно)
+        <input type="number" name="price" value="{{ form.get('price', '0') }}" min="0">
+    </label>
+    <label>Всего мест *
+        <input type="number" name="capacity" value="{{ form.get('capacity', '') }}" min="1" required>
+    </label>
+    <label>Ссылка на изображение
+        <input type="text" name="image_url" value="{{ form.get('image_url', '') }}" maxlength="500">
+    </label>
+    <label class="wide">Описание
+        <textarea name="description" rows="4">{{ form.get('description', '') }}</textarea>
+    </label>
+    <label class="check">
+        <input type="checkbox" name="is_published"
+               {% if form.get('is_published', 'on') %}checked{% endif %}>
+        Показывать в каталоге
+    </label>
+    <div class="wide">
+        <button class="btn" type="submit">Сохранить</button>
+        <a class="btn ghost" href="/admin/events">Отмена</a>
+    </div>
+</form>
+{% endblock %}

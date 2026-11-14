@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}{{ event.title }} — Билетный портал{% endblock %}
+{% block content %}
+<p class="breadcrumb"><a href="/">Каталог</a> / {{ event.category }} / {{ event.title }}</p>
+
+<div class="event-hero card">
+    <div>
+        <span class="card-category">{{ event.category }}</span>
+        <h1>{{ event.title }}</h1>
+        <p class="card-meta big">{{ event.starts_at|dt }}</p>
+        <p class="card-meta">{{ event.venue }}, {{ event.city }}</p>
+        <p class="event-description">{{ event.description }}</p>
+    </div>
+
+    <div class="event-buy">
+        <div class="price">{{ event.price|money }}</div>
+        <p>Свободно мест: <strong>{{ event.available }}</strong> из {{ event.capacity }}</p>
+
+        {% if user %}
+            {% if can_buy %}
+            <form method="post" action="/bookings" class="booking-form">
+                <input type="hidden" name="event_id" value="{{ event.id }}">
+                <label>Билетов
+                    <input type="number" name="quantity" value="1" min="1" max="10" required>
+                </label>
+                <button class="btn wide" type="submit">Забронировать</button>
+            </form>
+            <p class="hint">Бронь удержит места на {{ ttl }} минут — подтвердите её в личном кабинете.</p>
+            {% else %}
+            <p class="hint">Продажа недоступна:
+                {% if event.available == 0 %}свободных мест нет{% else %}мероприятие уже началось{% endif %}.
+            </p>
+            {% endif %}
+        {% else %}
+            <p class="hint"><a href="/login">Войдите</a> или <a href="/register">зарегистрируйтесь</a>,
+               чтобы купить билеты.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

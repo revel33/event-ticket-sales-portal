@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Вход — Билетный портал{% endblock %}
+{% block content %}
+<div class="auth-card card">
+    <h1>Вход</h1>
+    <p class="hint">Демо-доступы: user@example.com / user123, admin@example.com / admin123</p>
+    <form method="post" action="/login">
+        <label>Email
+            <input type="email" name="email" value="{{ email or '' }}" required>
+        </label>
+        <label>Пароль
+            <input type="password" name="password" required>
+        </label>
+        <button class="btn wide" type="submit">Войти</button>
+    </form>
+    <p class="hint">Нет аккаунта? <a href="/register">Зарегистрируйтесь</a>.</p>
+</div>
+{% endblock %}

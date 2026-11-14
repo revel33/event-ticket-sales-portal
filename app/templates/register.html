@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Регистрация — Билетный портал{% endblock %}
+{% block content %}
+<div class="auth-card card">
+    <h1>Регистрация</h1>
+    {% if errors %}
+    <ul class="flash err err-list">
+        {% for message in errors %}<li>{{ message }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+    <form method="post" action="/register">
+        <label>Email
+            <input type="email" name="email" value="{{ form.get('email', '') }}" required>
+        </label>
+        <label>Имя и фамилия
+            <input type="text" name="full_name" value="{{ form.get('full_name', '') }}" required maxlength="255">
+        </label>
+        <label>Пароль (минимум 6 символов)
+            <input type="password" name="password" required minlength="6" maxlength="72">
+        </label>
+        <button class="btn wide" type="submit">Создать аккаунт</button>
+    </form>
+    <p class="hint">Уже есть аккаунт? <a href="/login">Войдите</a>.</p>
+</div>
+{% endblock %}

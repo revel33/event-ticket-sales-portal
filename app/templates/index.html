@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Каталог мероприятий — Билетный портал{% endblock %}
+{% block content %}
+<h1>Мероприятия</h1>
+
+<form class="filters card" method="get" action="/">
+    <input type="search" name="q" value="{{ q or '' }}" placeholder="Поиск: название, место, описание">
+    <select name="city">
+        <option value="">Все города</option>
+        {% for c in cities %}
+            <option value="{{ c }}" {% if city == c %}selected{% endif %}>{{ c }}</option>
+        {% endfor %}
+    </select>
+    <select name="category">
+        <option value="">Все категории</option>
+        {% for c in categories %}
+            <option value="{{ c }}" {% if category == c %}selected{% endif %}>{{ c }}</option>
+        {% endfor %}
+    </select>
+    <input type="date" name="date_from" value="{{ date_from or '' }}" title="Дата от">
+    <input type="date" name="date_to" value="{{ date_to or '' }}" title="Дата до">
+    <label class="check"><input type="checkbox" name="available_only"
+           {% if available_only %}checked{% endif %}> есть места</label>
+    <button class="btn" type="submit">Подобрать</button>
+</form>
+
+{% if events %}
+<div class="cards">
+    {% for e in events %}
+    <a class="card event-card" href="/events/{{ e.id }}">
+        <span class="card-category">{{ e.category }}</span>
+        <h3 class="card-title">{{ e.title }}</h3>
+        <p class="card-meta">{{ e.venue }}, {{ e.city }}</p>
+        <p class="card-meta">{{ e.starts_at|dt }}</p>
+        <div class="card-footer">
+            <span class="price">{{ e.price|money }}</span>
+            {% if e.available > 0 %}
+                <span class="badge green">свободно {{ e.available }}</span>
+            {% else %}
+                <span class="badge red">мест нет</span>
+            {% endif %}
+        </div>
+    </a>
+    {% endfor %}
+</div>
+{% from "_macros.html" import pagination %}
+{{ pagination(page, pages, prev_url, next_url) }}
+{% else %}
+<p class="empty">По заданным фильтрам ничего не найдено. Попробуйте изменить условия поиска.</p>
+{% endif %}
+{% endblock %}
