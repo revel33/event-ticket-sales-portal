@@ -44,14 +44,14 @@ app = FastAPI(
     description=(
         "Учебный проект на FastAPI: каталог мероприятий, бронирование "
         "с удержанием мест на 15 минут, подтверждение брони с выдачей "
-        "QR-билетов, роли пользователя и администратора.\n\n"
+        "электронных билетов, роли пользователя и администратора.\n\n"
         "**REST API:** получите токен через `POST /api/auth/token` "
         "(email указывается в поле `username`) и нажмите кнопку "
         "**Authorize**.\n\n"
         "**Веб-интерфейс (Jinja2):** главная страница `http://127.0.0.1:8000/` "
         "— каталог событий, личный кабинет и админ-панель."
     ),
-    version="1.1.0",
+    version="1.2.0",
     lifespan=lifespan,
 )
 
@@ -73,13 +73,3 @@ app.include_router(admin.router)
 
 app.include_router(web.router)
 app.include_router(web_admin.router)
-
-
-@app.get("/health", tags=["Служебные"], summary="Проверка, что API работает")
-def health() -> dict:
-    return {
-        "status": "ok",
-        "service": "ticket-portal",
-        "web": "/",
-        "docs": "/docs",
-    }
